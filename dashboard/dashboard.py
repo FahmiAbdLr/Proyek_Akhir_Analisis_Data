@@ -3,24 +3,41 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtc
 import seaborn as sns
+from pathlib import Path
 
 st.set_page_config(layout="wide")
 st.title("E-Commerce Dashboard")
 
 @st.cache_data
 def load_data():
-    customers_df = pd.read_csv("../data/customers_dataset.csv")
-    geolocation_df = pd.read_csv("../data/geolocation_dataset.csv")
-    order_items_df = pd.read_csv("../data/order_items_dataset.csv")
-    order_payments_df = pd.read_csv("../data/order_payments_dataset.csv")
-    order_reviews_df = pd.read_csv("../data/order_reviews_dataset.csv")
-    orders_df = pd.read_csv("../data/orders_dataset.csv")
-    product_category_name_translation_df = pd.read_csv("../data/product_category_name_translation.csv")
-    products_df = pd.read_csv("../data/products_dataset.csv")
-    sellers_df = pd.read_csv("../data/sellers_dataset.csv")
-    return customers_df, geolocation_df, order_items_df, order_payments_df, order_reviews_df, orders_df, product_category_name_translation_df, products_df, sellers_df
+    BASE_DIR = Path(__file__).resolve().parent  # Ambil path file saat ini (dashboard.py)
+    DATA_DIR = BASE_DIR.parent / "data"  # Path ke folder data
+    
+    # Pastikan folder data ada
+    if not DATA_DIR.exists():
+        raise FileNotFoundError(f"Folder data tidak ditemukan: {DATA_DIR}")
+    
+    # Load dataset dengan pathlib
+    customers_df = pd.read_csv(DATA_DIR / "customers_dataset.csv")
+    geolocation_df = pd.read_csv(DATA_DIR / "geolocation_dataset.csv")
+    order_items_df = pd.read_csv(DATA_DIR / "order_items_dataset.csv")
+    order_payments_df = pd.read_csv(DATA_DIR / "order_payments_dataset.csv")
+    order_reviews_df = pd.read_csv(DATA_DIR / "order_reviews_dataset.csv")
+    orders_df = pd.read_csv(DATA_DIR / "orders_dataset.csv")
+    product_category_name_translation_df = pd.read_csv(DATA_DIR / "product_category_name_translation.csv")
+    products_df = pd.read_csv(DATA_DIR / "products_dataset.csv")
+    sellers_df = pd.read_csv(DATA_DIR / "sellers_dataset.csv")
+    
+    return (
+        customers_df, geolocation_df, order_items_df, order_payments_df, 
+        order_reviews_df, orders_df, product_category_name_translation_df, 
+        products_df, sellers_df
+    )
 
-customers_df, geolocation_df, order_items_df, order_payments_df, order_reviews_df, orders_df, product_category_name_translation_df, products_df, sellers_df = load_data()
+# Load data
+customers_df, geolocation_df, order_items_df, order_payments_df, \
+order_reviews_df, orders_df, product_category_name_translation_df, \
+products_df, sellers_df = load_data()
 
 selected_tab = st.sidebar.radio("Pilih Analisis:", [
     "Home",
