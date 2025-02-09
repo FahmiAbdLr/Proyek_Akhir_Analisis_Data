@@ -28,6 +28,8 @@ def load_data():
     products_df = pd.read_csv(DATA_DIR / "products_dataset.csv")
     sellers_df = pd.read_csv(DATA_DIR / "sellers_dataset.csv")
     
+    orders_df['order_purchase_timestamp'] = pd.to_datetime(orders_df['order_purchase_timestamp'])  # Konversi ke datetime
+    
     return (
         customers_df, geolocation_df, order_items_df, order_payments_df, 
         order_reviews_df, orders_df, product_category_name_translation_df, 
@@ -46,7 +48,6 @@ selected_tab = st.sidebar.radio("Pilih Analisis:", [
     "Pertanyaan 3",
     "Kesimpulan Akhir"
 ])
-
 if selected_tab == "Home":
     st.header("🏠 Proyek Analisis Data: E-Commerce Public Dataset")
     st.markdown("""
@@ -55,6 +56,20 @@ if selected_tab == "Home":
         2. Bagaimana tingkat kepuasan pelanggan terhadap produk dan layanan dalam beberapa bulan terakhir?
         3. Bagaimana demografi pelanggan perusahaan, seperti lokasi state dan lokasi kota?
     """)
+    st.markdown("""
+        ### **Deskripsi Data:**
+    """)
+    st.sidebar.header("Filter Data")
+    start_date = st.sidebar.date_input("Start Date", orders_df["order_purchase_timestamp"].min().date())
+    end_date = st.sidebar.date_input("End Date", orders_df["order_purchase_timestamp"].max().date())
+
+    # Filter data berdasarkan rentang tanggal
+    filtered_df = orders_df[(orders_df["order_purchase_timestamp"].dt.date >= start_date) & 
+                 (orders_df["order_purchase_timestamp"].dt.date <= end_date)]
+
+    st.write(f"Menampilkan data penjualan dari {start_date} hingga {end_date}")
+    st.dataframe(filtered_df)
+
 
 elif selected_tab == "Pertanyaan 1":
     st.header("📈 Bagaimana Performa Penjualan dan Revenue Perusahaan Dalam Beberapa Bulan Terakhir?")
